@@ -2,12 +2,20 @@
     padding: 0% 10%;
 }
 .box{
-    padding: 4% 2%;
+    padding: 4% 6%;
     border-radius: 20px;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
     margin-top: 1%;
     margin-bottom: 1%;
+    
 }
+
+//box activa
+.active{
+    border: 1.5px solid #099670;
+    transition: 0.1s ease;
+}
+
 .precio{
     font-weight: 700;
     font-size: 30px;
@@ -15,6 +23,12 @@
 
 .form-check-label{
     padding-left: 4%;
+}
+
+.form-check-input:checked{
+    opacity: 1;
+    background-color: #099670;
+    border: #099670;
 }
 
 h3{
@@ -28,4 +42,30 @@ h3{
 #total-presupuesto{
     margin-left: 4%;
     font-weight: 900;
+}
+
+//panel
+// .pannel{
+//     transition: height 5s ease-in-out;
+// }
+// .hidden{
+//     display: none;
+//     height: 0;
+//     transition: max-height 5s ease-in-out, opacity 0.5s ease;
+// }
+// .visible{
+//     display: block;
+//     height: fit-content;
+// }
+
+.hidden {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;             
+    transition: max-height .35s ease, opacity 0.5s ease;
+}
+.visible {
+    max-height: 1000px;     
+    opacity: 1;
+    transition: max-height 1s ease-in-out, opacity 0.5s ease;
 }

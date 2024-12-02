@@ -1,27 +1,27 @@
 <div class="container">
     <!-- SEO -->
-    <div class="row d-flex align-items-center box">
+    <div class="row d-flex align-items-center box" >
         <div class="col">
-            <h3>Seo</h3>
-            <p>Programació d'una pagina web responsive completa</p>
+            <h3>{{servicios[0].nombre}}</h3>
+            <p>{{servicios[0].description}}</p>
         </div>
-        <div class="col d-flex justify-content-center"><b><span #asPrecioSeo id="precio-seo" class="precio">300</span>€</b></div>
-        <div class="col form-check d-flex justify-content-center">
-            <input class="form-check-input" type="checkbox" value="300" #asCheckbox id="checkbox-seo" (change)="elegirServicio(300, $event)">
+        <div class="col d-flex justify-content-center"><b><span #asPrecioSeo id="precio-seo" class="precio">{{servicios[0].valor}}</span>€</b></div>
+        <div class="col form-check d-flex justify-content-end">
+            <input class="form-check-input" type="checkbox" value="300" #asCheckbox id="checkbox-seo" (change)="elegirServicio(servicios[0].valor, $event)">
             <label class="form-check-label" for="checkbox-seo">
                 Afegir
             </label>
         </div>
     </div>
     <!-- ADS -->
-    <div class="row d-flex align-items-center box">
+    <div class="row d-flex align-items-center box" >
         <div class="col">
-            <h3>Ads</h3>
-            <p>Programació d'una pagina web responsive completa</p>
+            <h3>{{servicios[1].nombre}}</h3>
+            <p>{{servicios[1].description}}</p>
         </div>
-        <div class="col d-flex justify-content-center"><b><span #asPrecioAds id="precio-ads" class="precio">400</span>€</b></div>
-        <div class="col form-check d-flex justify-content-center">
-            <input class="form-check-input" type="checkbox" value="400" #asCheckbox id="checkbox-ads" (change)="elegirServicio(400, $event)">
+        <div class="col d-flex justify-content-center"><b><span #asPrecioAds id="precio-ads" class="precio">{{servicios[1].valor}}</span>€</b></div>
+        <div class="col form-check d-flex justify-content-end">
+            <input class="form-check-input" type="checkbox" value="400" #asCheckbox id="checkbox-ads" (change)="elegirServicio(servicios[1].valor, $event)">
             <label class="form-check-label" for="checkbox-ads">
                 Afegir
             </label>
@@ -30,16 +30,22 @@
     <!-- WEB -->
     <div class="row d-flex align-items-center box">
         <div class="col">
-            <h3>Web</h3>
-            <p>Programació d'una pagina web responsive completa</p>
+            <h3>{{servicios[2].nombre}}</h3>
+            <p>{{servicios[2].description}}</p>
         </div>
-        <div class="col d-flex justify-content-center"><b><span #asPrecioWeb id="precio-web" class="precio">500</span>€</b></div>
-        <div class="col form-check d-flex justify-content-center">
-            <input class="form-check-input" type="checkbox" value="500" #asCheckbox id="checkbox-web" (change)="elegirServicio(500, $event)">
+        <div class="col d-flex justify-content-center"><b><span #asPrecioWeb id="precio-web" class="precio">{{servicios[2].valor}}</span>€</b></div>
+        <div class="col form-check d-flex justify-content-end">
+            <input class="form-check-input" type="checkbox" value="500" #asCheckbox id="checkbox-web" (change)="elegirServicio(servicios[2].valor, $event)">
             <label class="form-check-label" for="checkbox-web">
                 Afegir
             </label>
         </div>
+        <div class="pannel hidden" #asPannel>
+            <app-panel></app-panel>
+        </div>
     </div>
-    <div class="d-flex justify-content-end text-presupuesto"><b>Preu pressuposat: <span #asTotalPresu id="total-presupuesto">{{totalPresu}}</span>€</b></div>
+    <div class="d-flex justify-content-end text-presupuesto">
+        <b>Preu pressuposat: <span #asTotalPresu id="total-presupuesto">{{totalPresuValor}}</span>€</b>
+    </div>
+    
 </div>

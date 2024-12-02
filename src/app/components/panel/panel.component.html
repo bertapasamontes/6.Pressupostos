@@ -1,1 +1,17 @@
-<p>panel works!</p>
+
+<div class="row">
+    <div class="num-pages d-inline-flex align-items-center justify-content-end">
+        <p>Nombre de pàgines: </p>
+        <button type="button" class="btn" (click)="removePage()">-</button>
+        <div class="number-field">{{numPages}}</div>
+        <button type="button" class="btn" (click)="addPage()">+</button>
+    </div>
+</div>
+<div class="row">
+    <div class="num-languajes d-inline-flex justify-content-end align-items-center">
+        <p>Nombre de llenguatges: </p>
+        <button type="button" class="btn" (click)="removeLanguaje()" [disabled]="isUnchanged">-</button>
+        <div class="number-field">{{numLanguajes}}</div>
+        <button type="button" class="btn" (click)="addLanguaje()">+</button>
+    </div>
+</div>
