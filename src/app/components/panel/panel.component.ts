@@ -77,6 +77,9 @@ export class PanelComponent {
     return this.numLanguajes;
   }
   
+  showPopUp(){
+    
+  }
   
 
 }

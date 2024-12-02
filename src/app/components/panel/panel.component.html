@@ -1,6 +1,35 @@
+<div class="modal fade" id="modal-pages" aria-hidden="true" aria-labelledby="modal-pagesLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
 
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="modal-pagesLabel"><b>Número de pàgines</b></h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p>Afegeix el número de pàgines que tindrà el teu projecte. El cost de cada nova pàgina és de 30€</p>
+        </div>
+      </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-languajes" aria-hidden="true" aria-labelledby="modal-languajesLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header ">
+          <h1 class="modal-title fs-5" id="modal-languajesLabel"><b>Número de llenguatges</b></h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p>Afegeix el número de llenguatges que tindrà el teu projecte. El cost de cada nou llenguatge  és de 30€</p>
+        </div>
+      </div>
+    </div>
+</div>
 <div class="row">
     <div class="num-pages d-inline-flex align-items-center justify-content-end">
+        <!-- pop-up -->
+        <button type="button" class="btn btn-information" data-bs-toggle="modal" data-bs-target="#modal-pages">i</button>
+
         <p>Nombre de pàgines: </p>
         <button type="button" class="btn" (click)="removePage()">-</button>
         <div class="number-field">{{numPages}}</div>
@@ -8,7 +37,10 @@
     </div>
 </div>
 <div class="row">
-    <div class="num-languajes d-inline-flex justify-content-end align-items-center">
+    <div class="num-languajes d-flex justify-content-end align-items-center">
+        <!-- pop-up -->
+        <button type="button" class="btn btn-information" data-bs-toggle="modal" data-bs-target="#modal-languajes">i</button>
+
         <p>Nombre de llenguatges: </p>
         <button type="button" class="btn" (click)="removeLanguaje()" [disabled]="isUnchanged">-</button>
         <div class="number-field">{{numLanguajes}}</div>
