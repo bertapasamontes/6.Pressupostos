@@ -35,37 +35,42 @@ export class BudgetsListComponent{
   //constructor para habilitar renderer y poder añadir clases + usar servicio
   constructor(
     private renderer: Renderer2,
-    private totalPresu: BudgetService
+    private totalPresu: BudgetService,
+    private costesAdicionales: BudgetService
   ){}
-
+  coste:number = 0;
   totalPresuValor:number = 0;
   ngOnInit():void{
     //nos suscribimos
     this.totalPresu.totalPresu$.subscribe(total => {
       this.totalPresuValor = total;  // Se actualiza el valor cuando cambia
     });
+
+    this.costesAdicionales.costeAdicional$.subscribe(total => {
+      this.coste = total;  // Se actualiza el valor cuando cambia
+    });
   };
   
 
   elegirServicio(value:number, event: Event):void{
-    const checkbox2 = event.target as HTMLInputElement;
+    const checkbox = event.target as HTMLInputElement;
 
-    //encontrar el box de ese checkbox cheqeuado
-    const box = checkbox2.closest('.box');
+    //encontrar el box de ese checkbox chequeado
+    const box = checkbox.closest('.box');
 
-    if(checkbox2.checked){
+    if(checkbox.checked){
       this.sumaPresu += value;
       console.log("suma presupuesto chequeado: ", this.sumaPresu);
       this.totalPresu.sumameEstoAlPresu(value);
 
-      console.log("id checkbox: ", checkbox2.id);
+      console.log("id checkbox: ", checkbox.id);
 
       //estilo box
       if(box)this.renderer.addClass(box, "active");
       else console.log("no veo el box");
 
       //visibility pannel
-      if(checkbox2.id === "checkbox-web"){
+      if(checkbox.id === "checkbox-web"){
         this.renderer.removeClass(this.pannel.nativeElement,"hidden");
         this.renderer.addClass(this.pannel.nativeElement,"visible");
       }
@@ -81,7 +86,8 @@ export class BudgetsListComponent{
       else console.log("no veo el box");
 
       //visibility pannel
-      if(checkbox2.id === "checkbox-web"){
+      if(checkbox.id === "checkbox-web"){
+        this.coste = 0;
         this.renderer.removeClass(this.pannel.nativeElement,"visible");
         this.renderer.addClass(this.pannel.nativeElement,"hidden");
       }
