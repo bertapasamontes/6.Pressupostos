@@ -49,10 +49,10 @@ export class BudgetService {
     console.log("..... calcular coste adicional....");
 
     let additional = numPages * numLanguajes * 30;
-
-    this.costesAdicionalesServicio.next(additional);
+    
 
     console.log("..... fin calcular coste adicional....");
+    return this.costesAdicionalesServicio.next(additional);
   }
 
 

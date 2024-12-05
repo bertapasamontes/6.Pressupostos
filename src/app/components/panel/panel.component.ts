@@ -1,6 +1,6 @@
 import { Component} from '@angular/core';
 import { BudgetService } from '../../services/budget.service';
-import { ReactiveFormsModule, FormControl, FormGroup, Validators, NonNullableFormBuilder} from '@angular/forms';
+import { ReactiveFormsModule, FormControl, FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-panel',
