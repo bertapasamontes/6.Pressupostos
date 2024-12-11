@@ -1,7 +1,18 @@
-.box{
+.big-box{
     font-weight: 400;
     padding: 5% 25% 5% 25%;
     margin-bottom: 5%;
     background-color:aliceblue;
     border-radius: 25px;
+}
+.box{
+    padding: 4% 6%;
+    border-radius: 20px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    
+}
+.container{
+    padding: 5% 10%;
 }

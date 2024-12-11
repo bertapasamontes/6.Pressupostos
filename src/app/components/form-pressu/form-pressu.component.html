@@ -1,0 +1,30 @@
+<div class="box">
+    <h3><b>Demanar pressupost</b></h3>
+    <form [formGroup]="formPressu" class="d-inline-flex align-items-center justify-content-end">
+        <input type="text" class="form-control" placeholder="Nom" id="username" formControlName="username">
+        <input type="number" formControlName="phoneNumber" class="form-control" placeholder="Telèfon">
+        <input type="email" formControlName="email" class="form-control" placeholder="Email">
+        <button type="button" class="btn btn-success" (click)="showPresu()">Sol·licitar pressupost -></button>
+        <!-- <div class="number-field">{{numLanguajes}}</div> -->
+    </form>
+</div>
+<hr class="linea">
+<div id="result-presu" [ngStyle]="classResultPresu" #asResultPresu>
+    <h3><b>Pressupostos en curs:</b></h3>
+    <!-- <div class="row box">
+        <div class="col">
+            <p id="usernameOutput" #asUsernameOutput><b></b></p>
+            <p id="emailOutput" #asEmailOutput><b></b></p>
+            <p id="phoneOutput" #asPhoneOutput><b></b></p>
+        </div>
+        <div class="col">
+            <p><b>Serveis contractats:</b></p>
+            <p id="serviciosOutput"></p>
+        </div>
+        <div class="col">
+            <p>Total:</p>
+            <p><b></b></p>
+        </div>
+
+    </div> -->
+</div>

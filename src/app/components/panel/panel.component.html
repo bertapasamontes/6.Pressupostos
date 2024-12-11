@@ -33,7 +33,7 @@
         <p>Nombre de pàgines: </p>
         <form [formGroup]="formWeb" class="d-inline-flex align-items-center justify-content-end">
             <button type="button" class="btn" (click)="removePage()" [disabled]="isUnchanged">-</button>
-            <input type="number" formControlName="numberOfPages" [value]="numPages" class="number-field">
+            <input type="number" formControlName="numberOfPages" [value]="numPages" class="number-field" placeholder="1">
             <!-- <div class="number-field">{{numPages}}</div> -->
             <button type="button" class="btn" (click)="addPage()">+</button>
         </form>
@@ -48,7 +48,7 @@
         <p>Nombre de llenguatges: </p>
         <form [formGroup]="formWeb" class="d-inline-flex align-items-center justify-content-end">
           <button type="button" class="btn" (click)="removeLanguaje()" [disabled]="isUnchanged">-</button>
-          <input type="number" formControlName="numberOfLanguajes" [value]="numLanguajes" class="number-field">
+          <input type="number" formControlName="numberOfLanguajes" [value]="numLanguajes" class="number-field" placeholder="0">
           <!-- <div class="number-field">{{numLanguajes}}</div> -->
           <button type="button" class="btn" (click)="addLanguaje()">+</button>
         </form>

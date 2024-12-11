@@ -30,6 +30,9 @@ export class BudgetsListComponent{
    
   sumaPresu:number = 0;
   @ViewChild("asPannel") pannel: ElementRef | any;
+
+
+  public serviciosAñadidos:[] | any = [];
   
 
   //constructor para habilitar renderer y poder añadir clases + usar servicio
@@ -65,6 +68,13 @@ export class BudgetsListComponent{
 
       console.log("id checkbox: ", checkbox.id);
 
+      //añadimos el serivicio seeccionado al array serviciosAñadidos
+      this.serviciosAñadidos.push({
+        id : checkbox.id,
+        value: checkbox.value,
+      });
+      console.log("servicio añadido: ", this.serviciosAñadidos);
+
       //estilo box
       if(box)this.renderer.addClass(box, "active");
       else console.log("no veo el box");
@@ -78,9 +88,15 @@ export class BudgetsListComponent{
     } else{
       this.sumaPresu -=value;
       console.log("suma presupuesto: ", this.sumaPresu);
-      // this.totalPresu = this.sumaPresu;
       this.totalPresu.restameEstoDelPresu(value);
 
+      //quitamos el elemento del array serviciosAñadidos
+      let indexCheckId = this.serviciosAñadidos.indexOf(checkbox.id);
+      this.serviciosAñadidos.splice(indexCheckId, 1);
+      
+      console.log("servicio eliminado: ", this.serviciosAñadidos);
+
+      
       //estilo box
       if(box)this.renderer.removeClass(box, "active");
       else console.log("no veo el box");
