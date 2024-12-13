@@ -1,4 +1,4 @@
-import { Component} from '@angular/core';
+import { Component, EventEmitter, Output} from '@angular/core';
 import { BudgetService } from '../../services/budget.service';
 import { ReactiveFormsModule, FormControl, FormGroup} from '@angular/forms';
 
@@ -26,6 +26,8 @@ export class PanelComponent {
   formWeb:FormGroup |any;
 
   ngOnInit():void{
+
+
     //nos suscribimos
     this.totalPresu.totalPresu$.subscribe(total => {
       this.totalPresuValor = total;  // se actualiza el valor cuando cambia
@@ -33,6 +35,8 @@ export class PanelComponent {
     this.costesAdicionales.costeAdicional$.subscribe(total => {
       this.coste = total;  // Se actualiza el valor cuando cambia
     });
+
+    
 
     this.formWeb = new FormGroup({
       numberOfPages: new FormControl(this.numPages),
@@ -62,7 +66,27 @@ export class PanelComponent {
       this.coste = total;  // Se actualiza el valor cuando cambia
       console.log("coste actualizado: ", this.coste);
     });
+
+
+    this.formWeb.valueChanges.subscribe((values: { numberOfPages: number; numberOfLanguajes: number }) => {
+      this.numPages = values.numberOfPages || 0;
+      this.numLanguajes = values.numberOfLanguajes || 0;
+  
+      // Actualiza los valores en el servicio
+      this.costesAdicionales.setNumPages(this.numPages);
+      this.costesAdicionales.setNumLanguajes(this.numLanguajes);
+    });
   };
+  ngAfterContentInit(){
+    this.formWeb.valueChanges.subscribe((values: { numberOfPages: number; numberOfLanguajes: number }) => {
+      this.numPages = values.numberOfPages || 0;
+      this.numLanguajes = values.numberOfLanguajes || 0;
+  
+      // Actualiza los valores en el servicio
+      this.costesAdicionales.setNumPages(this.numPages);
+      this.costesAdicionales.setNumLanguajes(this.numLanguajes);
+    });
+  }
 
 
   recalcularTotal(): void {
@@ -76,11 +100,16 @@ export class PanelComponent {
     console.log("---- fin recalcular total ------");
   }
 
+  @Output() pagesChanged = new EventEmitter<number>();
+  @Output() languajesChanged = new EventEmitter<number>();
+
   addPage():any{ 
     this.costesAdicionales.calculaCosteAdicional(this.numPages, this.numLanguajes);
     this.totalPresu.calculameElCosteDeLaWeb(this.coste);
 
     this.numPages++;
+    this.costesAdicionales.setNumPages(this.numPages);
+    this.pagesChanged.emit(this.numPages); //notifica al componente padre del cambio en el numPages
     return this.numPages;
   }
 
@@ -90,7 +119,9 @@ export class PanelComponent {
       console.log("menor a 1")
       return this.numPages = 1;
     }
-       this.numPages--;
+    this.numPages--;
+    this.costesAdicionales.setNumPages(this.numPages);
+    this.pagesChanged.emit(this.numPages);
     this.costesAdicionales.devuelvemeMiDinero(this.numPages, this.numLanguajes);
     this.totalPresu.calculameElCosteDeLaWeb(this.coste);
  
@@ -102,6 +133,8 @@ export class PanelComponent {
   addLanguaje():any{
     this.isUnchanged = false;
     this.numLanguajes++;
+    this.costesAdicionales.setNumLanguajes(this.numLanguajes);
+    this.languajesChanged.emit(this.numLanguajes); //notifica del cambio al comp. padre del cambio en el num de languajes
     this.costesAdicionales.calculaCosteAdicional(this.numPages, this.numLanguajes);
     this.totalPresu.calculameElCosteDeLaWeb(this.coste);
 
@@ -113,9 +146,13 @@ export class PanelComponent {
       console.log("menor a 1")
       this.isUnchanged = true;
       this.numLanguajes = 0;
+      this.costesAdicionales.setNumLanguajes(this.numLanguajes);
+      this.languajesChanged.emit(this.numLanguajes); //notifica del cambio al comp. padre del cambio en el num de languajes
     }
     else {
       this.numLanguajes--;
+      this.costesAdicionales.setNumLanguajes(this.numLanguajes);
+      this.languajesChanged.emit(this.numLanguajes); //notifica del cambio al comp. padre del cambio en el num de languajes
     }
     this.totalPresu.calculameElCosteDeLaWeb(this.coste);
 

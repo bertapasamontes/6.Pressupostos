@@ -61,32 +61,51 @@ export class BudgetService {
 
     return this.costesAdicionalesServicio.next(additional);
   }
-  // devuelvemeMiDinero(numPages:number, numLanguajes:number){
-  //   console.log("nº pages: ",numPages);
-  //   console.log("nº languajes: ",numLanguajes);
-  //   let costeNuevo = this.costesAdicionalesServicio.value - (numPages * numLanguajes * 30+30);
-  //   console.log("costes adicionales: ", this.costesAdicionalesServicio.value);
 
-  //   return this.costesAdicionalesServicio.next(costeNuevo);
-  // }
   calculameElCosteDeLaWeb(costes:number){
     let presuNuevo = this.totalPresuServicio.value + costes;
     return this.totalPresuServicio.next(presuNuevo);
   }
 
-  // calculameElCosteDeLaWeb(numPages:number, numLanguajes:number){
-  //   console.log("pages: ",numPages);
-  //   console.log("languajes: ",numLanguajes);
-  //   let presuNuevo = this.totalPresuServicio.value + this.costesAdicionales.value;
-  //   return this.totalPresuServicio.next(presuNuevo);
-  // }
+  resetPresu(){
+    this.totalPresuServicio.next(0);
+  }
 
-  // devuelvemeMiDinero(numPages:number, numLanguajes:number){
-  //   console.log("pages: ",numPages);
-  //   console.log("languajes: ",numLanguajes);
-  //   let presuNuevo = this.totalPresuServicio.value - (numPages * numLanguajes * 30+30)
-  //   return this.totalPresuServicio.next(presuNuevo);
-  // }
+
+  //----------------- numPages y numLanguajes --------------------------
+  // Valores de páginas y lenguajes seleccionados
+  private numPagesSource = new BehaviorSubject<number>(1); // Valor inicial
+  private numLanguajesSource = new BehaviorSubject<number>(0); // Valor inicial
+
+  numPages$ = this.numPagesSource.asObservable();
+  numLanguajes$ = this.numLanguajesSource.asObservable();
+
+  // Métodos para actualizar y obtener los valores
+  setNumPages(value: number) {
+    this.numPagesSource.next(value);
+  }
+
+  getNumPages(): number {
+    return this.numPagesSource.value;
+  }
+
+  setNumLanguajes(value: number) {
+    this.numLanguajesSource.next(value);
+  }
+
+  getNumLanguajes(): number {
+    return this.numLanguajesSource.value;
+  }
+
+  resetPagesAndLanguajes(){
+    
+    this.setNumLanguajes(0);
+    this.setNumPages(1);
+    console.log("pages: ", this.numPagesSource.value)
+    console.log("Languajes: ", this.numLanguajesSource.value)
+    console.log("resetnumpagesandlanguajes function is called");
+  }
+
 
   constructor() { }
 }
