@@ -67,6 +67,7 @@
 <div id="result-presu" [ngStyle]="classResultPresu" #asResultPresu>
     <h3><b>Pressupostos en curs:</b></h3>
     <div class="botones d-flex justify-content-end">
+        <input type="text" name="buscador" id="buscador" class="form-control" #asBuscador>
         <button type="button" class="btn active" (click)="orderByDate()" #asButtonDate>Data</button>
         <button type="button" class="btn" (click)="orderByPrice()" #asButtonPrice>Import</button>
         <button type="button" class="btn" (click)="orderByName()" #asButtonName>Nom</button>

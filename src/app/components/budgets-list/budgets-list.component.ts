@@ -54,6 +54,8 @@ export class BudgetsListComponent{
   @ViewChild("asButtonPrice") buttonPrice: ElementRef | any;
   @ViewChild("asButtonName") buttonName: ElementRef | any;
 
+  @ViewChild("asBuscador") buscador: ElementRef | any;
+
   
 
   //constructor para habilitar renderer y poder añadir clases + usar servicio
@@ -70,18 +72,55 @@ export class BudgetsListComponent{
   public formPressu: FormGroup = new FormGroup({});
   
 
-  ngAfterViewInit() {
+  ngAfterViewInit() { //las vistas de los hijos del componente ya están accesibles. el elemento referenciado está completamente inicializado y accesible
     if (this.pannel) {
       console.log('numPages del panel:', this.pannel.numPages);
       console.log('numPages del panel:', this.pannel.numLanguajes);
     } else {
       console.error('PanelComponent no está inicializado');
     }
+
+    
+
+
+    //buscador
+    // document.addEventListener("keyup", (evento: Event)=>{
+    //   evento.target?.matches(this.buscador)? console.log(evento.target.value):console.log("no se encuentra");
+    // })
+    if(this.buscador){
+      this.renderer.listen(this.buscador.nativeElement, "keyup", (evento: KeyboardEvent)=>{
+        const inputValue = (evento.target as HTMLInputElement).value.trim().toLowerCase(); // Texto ingresado
+
+        // Comprobar si el texto coincide con algún nombre de presupuesto
+        // const encontrado = this.presupuestos.some((presupuesto: { nombre: string; }) =>
+        //   presupuesto.nombre.toLowerCase().includes(inputValue)
+        // );
+
+        // if (encontrado) {
+        //   console.log(`Coincidencia encontrada: ${inputValue}`, encontrado);
+        // } else {
+        //   console.log('No se encuentra');
+        // }
+
+
+        document.querySelectorAll(".nombre-presupuesto").forEach(presu=>{
+          if(presu.textContent?.toLocaleLowerCase().includes((evento.target as HTMLInputElement)?.value.toLocaleLowerCase())){
+            const rowCercana = presu.closest('.row-de-presus');
+            rowCercana?.classList.remove("filtro")
+          } else{
+            const rowCercana = presu.closest('.row-de-presus');
+            rowCercana?.classList.add("filtro");
+          }
+        })
+
+      })
+    }
+
   }
   numPagesValor: number = 0;
   numLanguajesValor: number = 0;
 
-  ngOnInit():void{
+  ngOnInit():void{  //las vistas y los hijos del componente no están dispoibles aún. El valor de viewChild será undefined
     //nos suscribimos
     this.totalPresu.totalPresu$.subscribe(total => {
       this.totalPresuValor = total;  // Se actualiza el valor cuando cambia
@@ -255,6 +294,7 @@ export class BudgetsListComponent{
     const username = this.renderer.createElement('p');
     username.innerText = this.formPressu.get('username')?.value;
     this.renderer.addClass(username, 'username-style'); //style para que aparezca más grande y en bold
+    this.renderer.addClass(username, 'nombre-presupuesto'); //style para que aparezca más grande y en bold
 
     const email = this.renderer.createElement('p');
     email.innerText = this.formPressu.get('email')?.value;
@@ -265,6 +305,7 @@ export class BudgetsListComponent{
     //row
     const row = this.renderer.createElement('div');
     this.renderer.addClass(row, 'row');
+    this.renderer.addClass(row, 'row-de-presus');
     this.renderer.addClass(row, 'box');
 
     //atributo del row
@@ -369,9 +410,9 @@ export class BudgetsListComponent{
 
   //NO VA LO DE LAS CLASES DE ACTIVE!!!!!
   orderByName(){ //ordenar divs alfabeticamente
-    // this.renderer.addClass(this.buttonName, 'active');
-    // this.renderer.removeClass(this.buttonPrice, 'active');
-    // this.renderer.removeClass(this.buttonDate, 'active');
+    this.renderer.addClass(this.buttonName.nativeElement, 'active');
+    this.renderer.removeClass(this.buttonPrice.nativeElement, 'active');
+    this.renderer.removeClass(this.buttonDate.nativeElement, 'active');
 
 
     // ordenar los divs después de añadir uno nuevo
@@ -386,9 +427,9 @@ export class BudgetsListComponent{
   }
 
   orderByPrice(){
-    // this.renderer.removeClass(this.buttonName, 'active');
-    // this.renderer.addClass(this.buttonPrice, 'active');
-    // this.renderer.removeClass(this.buttonDate, 'active');
+    this.renderer.removeClass(this.buttonName.nativeElement, 'active');
+    this.renderer.addClass(this.buttonPrice.nativeElement, 'active');
+    this.renderer.removeClass(this.buttonDate.nativeElement, 'active');
 
     const rows = Array.from(this.resultPresu.nativeElement.children);
     rows.sort((a: any, b: any) => {
@@ -401,9 +442,9 @@ export class BudgetsListComponent{
   }
 
   orderByDate(){
-    // this.renderer.removeClass(this.buttonName, 'active');
-    // this.renderer.removeClass(this.buttonPrice, 'active');
-    // this.renderer.addClass(this.buttonDate, 'active');
+    this.renderer.removeClass(this.buttonName.nativeElement, 'active');
+    this.renderer.removeClass(this.buttonPrice.nativeElement, 'active');
+    this.renderer.addClass(this.buttonDate.nativeElement, 'active');
 
     const rows = Array.from(this.resultPresu.nativeElement.children);
     rows.sort((a: any, b: any) => {
