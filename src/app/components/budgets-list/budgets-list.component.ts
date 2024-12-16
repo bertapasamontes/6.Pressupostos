@@ -1,13 +1,13 @@
-import { Component, ElementRef, OnInit, ViewChild, Renderer2} from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, Renderer2, Pipe} from '@angular/core';
 import { PanelComponent } from "../panel/panel.component";
 import { BudgetService } from '../../services/budget.service';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators} from '@angular/forms';
-import { NgFor, NgStyle } from '@angular/common';
+import { CommonModule, NgFor, NgForOf, NgStyle } from '@angular/common';
 import { Pressu } from '../../pressu';
 
 @Component({
   selector: 'app-budgets-list',
-  imports: [PanelComponent,ReactiveFormsModule, NgStyle],
+  imports: [PanelComponent,ReactiveFormsModule, NgStyle, CommonModule],
   templateUrl: './budgets-list.component.html',
   styleUrl: './budgets-list.component.scss'
 })
@@ -49,6 +49,11 @@ export class BudgetsListComponent{
   @ViewChild("asUsernameOutput") usernameOutput: ElementRef | any;
   @ViewChild("asEmailOutput") emailOutput: ElementRef | any;
   @ViewChild("asPhoneOutput") phoneOutput: ElementRef | any;
+
+  @ViewChild("asButtonDate") buttonDate: ElementRef | any;
+  @ViewChild("asButtonPrice") buttonPrice: ElementRef | any;
+  @ViewChild("asButtonName") buttonName: ElementRef | any;
+
   
 
   //constructor para habilitar renderer y poder añadir clases + usar servicio
@@ -235,7 +240,6 @@ export class BudgetsListComponent{
           'display': 'block'
         }
 
-        // alert("enviado exitosamente");
         this.getInfo();
 
 
@@ -246,8 +250,7 @@ export class BudgetsListComponent{
     }
   }
 
-  
-  getInfo(){
+  showInfo(){
     //cogemos las variables del form
     const username = this.renderer.createElement('p');
     username.innerText = this.formPressu.get('username')?.value;
@@ -259,17 +262,15 @@ export class BudgetsListComponent{
     const phone = this.renderer.createElement('p');
     phone.innerText = this.formPressu.get('phoneNumber')?.value;
 
-    this.presupuestos.push({
-      nombre:this.formPressu.get('username')?.value,
-      fecha:Date(),
-      precio:this.totalPresuValor
-    });
-    console.log("presupuestos", this.presupuestos);
-
     //row
     const row = this.renderer.createElement('div');
     this.renderer.addClass(row, 'row');
     this.renderer.addClass(row, 'box');
+
+    //atributo del row
+    this.renderer.setAttribute(row, "data-username", this.formPressu.get('username')?.value.toLowerCase().replace(/ /g, "-"));
+    this.renderer.setAttribute(row, "data-price", this.totalPresuValor.toString());
+    this.renderer.setAttribute(row, "data-date", Date());
 
     // columnas dentro del row
     const col1 = this.renderer.createElement('div');
@@ -325,9 +326,22 @@ export class BudgetsListComponent{
 
     //añadimos la row a resultPresu
     this.renderer.appendChild(this.resultPresu.nativeElement, row);
+  }
 
+  
+  getInfo(){
+    this.presupuestos.push({
+      nombre:this.formPressu.get('username')?.value,
+      fecha:Date(),
+      precio:this.totalPresuValor
+    });
+    console.log("presupuestos", this.presupuestos);
 
+    this.showInfo();
+    this.cleanForm();
+  }
 
+  cleanForm(){
     //limpiamos chequeadores
     // Desmarcar todos los checkboxes
     const checkboxes = document.querySelectorAll<HTMLInputElement>('input[type="checkbox"]');
@@ -344,14 +358,60 @@ export class BudgetsListComponent{
     //encontrar el box de ese checkbox chequeado
       
     this.budgetService.resetPagesAndLanguajes();
-    this.budgetService.setNumPages(1); // Asegúrate de que los valores se actualicen después del restablecimiento
-    this.budgetService.setNumLanguajes(0);
 
     // actualizar inputs del panel
     this.updatePanelInputs();
 
     this.renderer.removeClass(this.pannel.nativeElement,"visible");
     this.renderer.addClass(this.pannel.nativeElement,"hidden");
+  }  
+
+
+  //NO VA LO DE LAS CLASES DE ACTIVE!!!!!
+  orderByName(){ //ordenar divs alfabeticamente
+    // this.renderer.addClass(this.buttonName, 'active');
+    // this.renderer.removeClass(this.buttonPrice, 'active');
+    // this.renderer.removeClass(this.buttonDate, 'active');
+
+
+    // ordenar los divs después de añadir uno nuevo
+    const rows = Array.from(this.resultPresu.nativeElement.children);
+    rows.sort((a: any, b: any) => {
+      const usernameA = a.getAttribute('data-username') || '';
+      const usernameB = b.getAttribute('data-username') || '';
+      return usernameA.localeCompare(usernameB); // orden alfabético
+    });
+
+    rows.forEach(row => this.resultPresu.nativeElement.appendChild(row));
   }
 
+  orderByPrice(){
+    // this.renderer.removeClass(this.buttonName, 'active');
+    // this.renderer.addClass(this.buttonPrice, 'active');
+    // this.renderer.removeClass(this.buttonDate, 'active');
+
+    const rows = Array.from(this.resultPresu.nativeElement.children);
+    rows.sort((a: any, b: any) => {
+      const priceA = a.getAttribute('data-price') || '';
+      const priceB = b.getAttribute('data-price') || '';
+      return priceA.localeCompare(priceB); // orden por precio (alfabeticamente?)
+    });
+
+    rows.forEach(row => this.resultPresu.nativeElement.appendChild(row));
+  }
+
+  orderByDate(){
+    // this.renderer.removeClass(this.buttonName, 'active');
+    // this.renderer.removeClass(this.buttonPrice, 'active');
+    // this.renderer.addClass(this.buttonDate, 'active');
+
+    const rows = Array.from(this.resultPresu.nativeElement.children);
+    rows.sort((a: any, b: any) => {
+      const dateA = a.getAttribute('data-date') || '';
+      const dateB = b.getAttribute('data-date') || '';
+      return dateA.localeCompare(dateB); // orden por precio (alfabeticamente?)
+    });
+
+    rows.forEach(row => this.resultPresu.nativeElement.appendChild(row));
+  }
 }

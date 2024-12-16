@@ -66,6 +66,12 @@
 <hr class="linea">
 <div id="result-presu" [ngStyle]="classResultPresu" #asResultPresu>
     <h3><b>Pressupostos en curs:</b></h3>
+    <div class="botones d-flex justify-content-end">
+        <button type="button" class="btn active" (click)="orderByDate()" #asButtonDate>Data</button>
+        <button type="button" class="btn" (click)="orderByPrice()" #asButtonPrice>Import</button>
+        <button type="button" class="btn" (click)="orderByName()" #asButtonName>Nom</button>
+    </div>
+
     <!-- <div class="row box">
         <div class="col">
             <p id="usernameOutput" #asUsernameOutput><b></b></p>
