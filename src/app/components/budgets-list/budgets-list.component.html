@@ -7,7 +7,7 @@
     <div class="col d-flex justify-content-center"><b><span #asPrecioSeo id="precio-seo"
                 class="precio">{{servicios[0].valor}}</span>€</b></div>
     <div class="col form-check d-flex justify-content-end">
-        <input class="form-check-input" type="checkbox" value="300" #asCheckbox id="Seo"
+        <input class="form-check-input" type="checkbox" value="servicios[0].valor" #asCheckbox id="Seo"
             (change)="elegirServicio(servicios[0].valor, $event)">
         <label class="form-check-label" for="Seo">
             Afegir
@@ -23,7 +23,7 @@
     <div class="col d-flex justify-content-center"><b><span #asPrecioAds id="precio-ads"
                 class="precio">{{servicios[1].valor}}</span>€</b></div>
     <div class="col form-check d-flex justify-content-end">
-        <input class="form-check-input" type="checkbox" value="400" #asCheckbox id="Ads"
+        <input class="form-check-input" type="checkbox" value="servicios[1].valor" #asCheckbox id="Ads"
             (change)="elegirServicio(servicios[1].valor, $event)">
         <label class="form-check-label" for="Ads">
             Afegir
@@ -39,7 +39,7 @@
     <div class="col d-flex justify-content-center"><b><span #asPrecioWeb id="precio-web"
                 class="precio">{{servicios[2].valor}}</span>€</b></div>
     <div class="col form-check d-flex justify-content-end">
-        <input class="form-check-input" type="checkbox" value="500" #asCheckbox id="Web"
+        <input class="form-check-input" type="checkbox" value="servicios[2].valor" #asCheckbox id="Web"
             (change)="elegirServicio(servicios[2].valor, $event)">
         <label class="form-check-label" for="Web">
             Afegir
@@ -60,33 +60,31 @@
         <input type="number" formControlName="phoneNumber" class="form-control" placeholder="Telèfon">
         <input type="email" formControlName="email" class="form-control" placeholder="Email">
         <button type="button" class="btn btn-success" (click)="showPresu()">Sol·licitar pressupost -></button>
-        <!-- <div class="number-field">{{numLanguajes}}</div> -->
     </form>
 </div>
 <hr class="linea">
 <div id="result-presu" [ngStyle]="classResultPresu" #asResultPresu>
     <h3><b>Pressupostos en curs:</b></h3>
     <div class="botones d-flex justify-content-end">
-        <input type="text" name="buscador" id="buscador" class="form-control" #asBuscador>
-        <button type="button" class="btn active" (click)="orderByDate()" #asButtonDate>Data</button>
+        <svg xmlns="http://www.w3.org/2000/svg" class="browser-icon"
+                viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                    clip-rule="evenodd" />
+        </svg>
+        <div class="browser-oculto">
+            <input type="text" name="buscador" id="buscador" class="form-control" #asBuscador
+                placeholder="Cerca el pressupost ">
+            <svg xmlns="http://www.w3.org/2000/svg" class="input-icon"
+                viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                    clip-rule="evenodd" />
+            </svg>
+        </div>
+
+        <button type="button" class="btn active-filter" (click)="orderByDate()" #asButtonDate>Data</button>
         <button type="button" class="btn" (click)="orderByPrice()" #asButtonPrice>Import</button>
         <button type="button" class="btn" (click)="orderByName()" #asButtonName>Nom</button>
     </div>
-
-    <!-- <div class="row box">
-        <div class="col">
-            <p id="usernameOutput" #asUsernameOutput><b></b></p>
-            <p id="emailOutput" #asEmailOutput><b></b></p>
-            <p id="phoneOutput" #asPhoneOutput><b></b></p>
-        </div>
-        <div class="col">
-            <p><b>Serveis contractats:</b></p>
-            <p id="serviciosOutput"></p>
-        </div>
-        <div class="col">
-            <p>Total:</p>
-            <p><b></b></p>
-        </div>
-
-    </div> -->
 </div>

@@ -1,17 +1,23 @@
-import { Component, ElementRef, OnInit, ViewChild, Renderer2, Pipe} from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, Renderer2, Pipe, inject} from '@angular/core';
 import { PanelComponent } from "../panel/panel.component";
 import { BudgetService } from '../../services/budget.service';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators} from '@angular/forms';
 import { CommonModule, NgFor, NgForOf, NgStyle } from '@angular/common';
 import { Pressu } from '../../pressu';
 
+
+
+import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+
 @Component({
   selector: 'app-budgets-list',
-  imports: [PanelComponent,ReactiveFormsModule, NgStyle, CommonModule],
+  imports: [PanelComponent, ReactiveFormsModule, NgStyle, CommonModule, RouterModule],
   templateUrl: './budgets-list.component.html',
   styleUrl: './budgets-list.component.scss'
 })
 export class BudgetsListComponent{
+
   [x: string]: any;
 
   servicios = [
@@ -63,7 +69,11 @@ export class BudgetsListComponent{
     private renderer: Renderer2,
     private totalPresu: BudgetService,
     private costesAdicionales: BudgetService,
-    private budgetService: BudgetService
+    private budgetService: BudgetService,
+
+    private route: ActivatedRoute= inject(ActivatedRoute),
+    private router: Router
+
   ){}
   coste:number = 0;
   totalPresuValor:number = 0;
@@ -71,57 +81,40 @@ export class BudgetsListComponent{
   //creamos el formPresu
   public formPressu: FormGroup = new FormGroup({});
   
-
-  ngAfterViewInit() { //las vistas de los hijos del componente ya están accesibles. el elemento referenciado está completamente inicializado y accesible
-    if (this.pannel) {
-      console.log('numPages del panel:', this.pannel.numPages);
-      console.log('numPages del panel:', this.pannel.numLanguajes);
-    } else {
-      console.error('PanelComponent no está inicializado');
-    }
-
-    
-
-
-    //buscador
-    // document.addEventListener("keyup", (evento: Event)=>{
-    //   evento.target?.matches(this.buscador)? console.log(evento.target.value):console.log("no se encuentra");
-    // })
-    if(this.buscador){
-      this.renderer.listen(this.buscador.nativeElement, "keyup", (evento: KeyboardEvent)=>{
-        const inputValue = (evento.target as HTMLInputElement).value.trim().toLowerCase(); // Texto ingresado
-
-        // Comprobar si el texto coincide con algún nombre de presupuesto
-        // const encontrado = this.presupuestos.some((presupuesto: { nombre: string; }) =>
-        //   presupuesto.nombre.toLowerCase().includes(inputValue)
-        // );
-
-        // if (encontrado) {
-        //   console.log(`Coincidencia encontrada: ${inputValue}`, encontrado);
-        // } else {
-        //   console.log('No se encuentra');
-        // }
-
-
-        document.querySelectorAll(".nombre-presupuesto").forEach(presu=>{
-          if(presu.textContent?.toLocaleLowerCase().includes((evento.target as HTMLInputElement)?.value.toLocaleLowerCase())){
-            const rowCercana = presu.closest('.row-de-presus');
-            rowCercana?.classList.remove("filtro")
-          } else{
-            const rowCercana = presu.closest('.row-de-presus');
-            rowCercana?.classList.add("filtro");
-          }
-        })
-
-      })
-    }
-
-  }
   numPagesValor: number = 0;
   numLanguajesValor: number = 0;
 
   ngOnInit():void{  //las vistas y los hijos del componente no están dispoibles aún. El valor de viewChild será undefined
-    //nos suscribimos
+
+    // ------------ rutas ------------
+    //nos suscribimos a las rutas para, si en la url hay parametros, q se marquen
+    this.route.queryParams.subscribe(params => {
+      // Marcar los checkboxes según los parámetros de la URL
+      this.servicios.forEach(servicio => {
+        const checkbox = document.getElementById(servicio.nombre) as HTMLInputElement;
+
+        if (checkbox && params[servicio.nombre] !== undefined) {
+          checkbox.checked = true;
+          
+          if (!this.serviciosAñadidos.find((s: { id: string; }) => s.id === servicio.nombre)) {
+            this.serviciosAñadidos.push({ id: servicio.nombre, value: servicio.valor });
+            // this.totalPresuValor +=servicio.valor;
+            this.totalPresu.sumameEstoAlPresu(servicio.valor)
+          }
+          // else{
+          //   this.totalPresu.restameEstoDelPresu(servicio.valor)
+          // }
+          console.table("servicios desde url", this.serviciosAñadidos);
+        }
+      });
+      console.log("estoy fuera");
+    });
+    //---------------------------------
+
+
+
+
+    //nos suscribimos al total
     this.totalPresu.totalPresu$.subscribe(total => {
       this.totalPresuValor = total;  // Se actualiza el valor cuando cambia
     });
@@ -160,8 +153,34 @@ export class BudgetsListComponent{
       email: new FormControl('', [Validators.required]),
       phoneNumber:new FormControl(0, [Validators.required])
       }
-    );
+    );    
   };
+
+  ngAfterViewInit() { //las vistas de los hijos del componente ya están accesibles. el elemento referenciado está completamente inicializado y accesible
+    if (this.pannel) {
+      console.log('numPages del panel:', this.pannel.numPages);
+      console.log('numPages del panel:', this.pannel.numLanguajes);
+    } else {
+      console.error('PanelComponent no está inicializado');
+    }
+
+    
+    //buscador
+    if(this.buscador){
+      this.renderer.listen(this.buscador.nativeElement, "keyup", (evento: KeyboardEvent)=>{ //listener para cuando se introduzcan cosas en el buscador.
+        document.querySelectorAll(".nombre-presupuesto").forEach(presu=>{ //accedemos a los nombres de los presus que están dentro de rows de presus 
+          const rowCercana = presu.closest('.row-de-presus'); //localizamos la row más cercana al presu que estamos mirando.
+          if(presu.textContent?.toLocaleLowerCase().includes((evento.target as HTMLInputElement)?.value.toLocaleLowerCase())){ //si el nombre del presu incluye lo introducido en el buscador:
+            rowCercana?.classList.remove("filtro") //se quita la clase filtro (= display:none)
+          } else{
+            rowCercana?.classList.add("filtro");
+          }
+        })
+
+      })
+    }
+
+  }
 
   onPagesChanged(newNumPages: number): void {
     console.log('Número de páginas actualizado en el padre:', newNumPages);
@@ -188,14 +207,26 @@ export class BudgetsListComponent{
     //encontrar el box de ese checkbox chequeado
     const box = checkbox.closest('.box');
 
+    //------ rutas ------
+    // obtener los parámetros actuales
+    const params: { [key: string]: any } = { ...this.route.snapshot.queryParams };
+    const nombreServicio = checkbox.id;
+    // -----------------------
+
     if(checkbox.checked){
-      this.sumaPresu += value;
+      // this.sumaPresu += value;
+      this.recalcularTotal();
+
       console.log("suma presupuesto chequeado: ", this.sumaPresu);
       this.totalPresu.sumameEstoAlPresu(value);
 
       console.log("id checkbox: ", checkbox.id);
 
-     
+      // ------ rutas ------
+      params[nombreServicio] = true; //añade el parametro si está seleccionado
+      // -------------------
+
+
 
       //estilo box
       if(box)this.renderer.addClass(box, "active");
@@ -205,9 +236,6 @@ export class BudgetsListComponent{
       if(checkbox.id === "Web"){
         this.renderer.removeClass(this.pannel.nativeElement,"hidden");
         this.renderer.addClass(this.pannel.nativeElement,"visible");
-
-        // const numPages = this.pannel?.numPages; // Número de páginas desde el componente hijo
-        // const numLanguajes = this.pannel?.numLanguajes;
 
         const currentPages = this.budgetService.getNumPages();
         console.log("current pages: ", currentPages)
@@ -232,9 +260,18 @@ export class BudgetsListComponent{
       }
 
     } else{
-      this.sumaPresu -=value;
+      // this.sumaPresu -=value;
+      this.recalcularTotal()
+
+
       console.log("suma presupuesto: ", this.sumaPresu);
       this.totalPresu.restameEstoDelPresu(value);
+
+
+      // ------- rutas --------
+      if(params[nombreServicio]){delete params[nombreServicio];}
+      // ----------------------
+      
 
       //quitamos el elemento del array serviciosAñadidos
       let indexCheckId = this.serviciosAñadidos.indexOf(checkbox.id);
@@ -246,9 +283,7 @@ export class BudgetsListComponent{
       //visibility pannel
       if(checkbox.id === "Web"){
         this.coste = 0;
-        
-        // this.numPagesValor = 1; // valores predeterminados
-        // this.numLanguajesValor = 0;
+
         this.renderer.removeClass(this.pannel.nativeElement,"visible");
         this.renderer.addClass(this.pannel.nativeElement,"hidden");
       }
@@ -256,6 +291,22 @@ export class BudgetsListComponent{
       if(box)this.renderer.removeClass(box, "active");
       else console.log("no veo el box");
     }
+
+
+    // Actualizar la URL con los nuevos parámetros
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: params,
+      // queryParamsHandling: 'merge' // Mantener otros parámetros existentes
+    });
+  }
+
+  recalcularTotal(){
+    // this.sumaPresu = 0;
+    this.serviciosAñadidos.forEach((servicio: { valor: number; })=>{
+      this.totalPresuValor += servicio.valor; 
+    })
+    return this.totalPresuValor;
   }
   
   
@@ -351,11 +402,19 @@ export class BudgetsListComponent{
     //col3
     const col3Text = this.renderer.createElement('p');
     col3Text.innerText = "Total:";
+    
     this.renderer.appendChild(col3, col3Text);
 
     const col3Total = this.renderer.createElement('p');
-    col3Total.innerText = this.totalPresuValor+'€';
+    this.renderer.addClass(col3Total, 'total-presupuesto');
+    const col3SpanEuros = this.renderer.createElement('SPAN');
+    const col3Euros = this.renderer.createElement('p');
+    col3Euros.innerText = "€";
+    col3SpanEuros.appendChild(col3Euros);
+    col3Total.innerText = this.totalPresuValor;
+    
     this.renderer.appendChild(col3, col3Total);
+    this.renderer.appendChild(col3, col3SpanEuros);
     //----  fin contenido dentro de las columnas -----------
 
 
@@ -395,7 +454,7 @@ export class BudgetsListComponent{
     // Reiniciar el formulario
     // this.formPressu.reset();
     this.serviciosAñadidos=[];
-    this.totalPresu .resetPresu();
+    this.totalPresu.resetPresu();
     //encontrar el box de ese checkbox chequeado
       
     this.budgetService.resetPagesAndLanguajes();
@@ -407,12 +466,11 @@ export class BudgetsListComponent{
     this.renderer.addClass(this.pannel.nativeElement,"hidden");
   }  
 
-
-  //NO VA LO DE LAS CLASES DE ACTIVE!!!!!
+  //ordernar divs de los presus
   orderByName(){ //ordenar divs alfabeticamente
-    this.renderer.addClass(this.buttonName.nativeElement, 'active');
-    this.renderer.removeClass(this.buttonPrice.nativeElement, 'active');
-    this.renderer.removeClass(this.buttonDate.nativeElement, 'active');
+    this.renderer.addClass(this.buttonName.nativeElement, 'active-filter');
+    this.renderer.removeClass(this.buttonPrice.nativeElement, 'active-filter');
+    this.renderer.removeClass(this.buttonDate.nativeElement, 'active-filter');
 
 
     // ordenar los divs después de añadir uno nuevo
@@ -427,9 +485,9 @@ export class BudgetsListComponent{
   }
 
   orderByPrice(){
-    this.renderer.removeClass(this.buttonName.nativeElement, 'active');
-    this.renderer.addClass(this.buttonPrice.nativeElement, 'active');
-    this.renderer.removeClass(this.buttonDate.nativeElement, 'active');
+    this.renderer.removeClass(this.buttonName.nativeElement, 'active-filter');
+    this.renderer.addClass(this.buttonPrice.nativeElement, 'active-filter');
+    this.renderer.removeClass(this.buttonDate.nativeElement, 'active-filter');
 
     const rows = Array.from(this.resultPresu.nativeElement.children);
     rows.sort((a: any, b: any) => {
@@ -442,9 +500,9 @@ export class BudgetsListComponent{
   }
 
   orderByDate(){
-    this.renderer.removeClass(this.buttonName.nativeElement, 'active');
-    this.renderer.removeClass(this.buttonPrice.nativeElement, 'active');
-    this.renderer.addClass(this.buttonDate.nativeElement, 'active');
+    this.renderer.removeClass(this.buttonName.nativeElement, 'active-filter');
+    this.renderer.removeClass(this.buttonPrice.nativeElement, 'active-filter');
+    this.renderer.addClass(this.buttonDate.nativeElement, 'active-filter');
 
     const rows = Array.from(this.resultPresu.nativeElement.children);
     rows.sort((a: any, b: any) => {

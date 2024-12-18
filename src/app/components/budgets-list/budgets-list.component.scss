@@ -63,14 +63,56 @@ h3{
 }
 
 .username-style{
-font-weight: 700;
-font-size: larger;
+    font-weight: 700;
+    font-size: 25px;
+}
+.total-presupuesto{
+    font-weight: 800;
+    font-size: 25px;
 }
 
 .title-col2{
-font-weight: 700;
+    font-weight: 700;
 }
 
 .filtro{
     display: none;
 }
+.active-filter{
+    font-weight: 700;
+    transition: 0.1s ease;
+}
+
+
+.browser-oculto{
+    display: none;
+    position: relative;
+    width: 271px;
+}
+
+.browser-icon {
+    color: #191919;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 50%;
+    
+}
+
+.input-icon {
+    color: #191919;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#buscador{ 
+    box-sizing: border-box;
+    color: #191919;
+    padding: 5px 15px 5px 35px;
+    width: 100%; 
+}
+
