@@ -55,24 +55,26 @@
 
 <div class="box">
     <h3><b>Demanar pressupost</b></h3>
-    <form [formGroup]="formPressu" class="d-inline-flex align-items-center justify-content-end">
+    <form [formGroup]="formPressu" class="d-inline-flex align-items-center justify-content-end botones">
         <input type="text" class="form-control" placeholder="Nom" id="username" formControlName="username">
-        <input type="number" formControlName="phoneNumber" class="form-control" placeholder="Telèfon">
+        <input type="number" formControlName="phoneNumber" class="form-control" placeholder="123 456 678" minlength="9" maxlength="12">
         <input type="email" formControlName="email" class="form-control" placeholder="Email">
-        <button type="button" class="btn btn-success" (click)="showPresu()">Sol·licitar pressupost -></button>
+        <button type="button" class="btn btn-success" (click)="showPresu()">Sol·licitar pressupost <span class="material-symbols-outlined">
+            arrow_forward
+            </span></button>
     </form>
 </div>
 <hr class="linea">
 <div id="result-presu" [ngStyle]="classResultPresu" #asResultPresu>
     <h3><b>Pressupostos en curs:</b></h3>
     <div class="botones d-flex justify-content-end">
-        <svg xmlns="http://www.w3.org/2000/svg" class="browser-icon"
-                viewBox="0 0 20 20" fill="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" class="browser-icon" [ngClass]="{'ocultar': LupaOculta}"
+                viewBox="0 0 20 20" fill="currentColor" (click)="displayBrowser()" id="browser-icon">
                 <path fill-rule="evenodd"
                     d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
                     clip-rule="evenodd" />
         </svg>
-        <div class="browser-oculto">
+        <div id="browser-oculto" [ngClass]="{'visible': browserVisible}" class="browser-oculto">
             <input type="text" name="buscador" id="buscador" class="form-control" #asBuscador
                 placeholder="Cerca el pressupost ">
             <svg xmlns="http://www.w3.org/2000/svg" class="input-icon"

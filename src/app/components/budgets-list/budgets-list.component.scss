@@ -34,11 +34,16 @@ h3{
 
 .text-presupuesto{
     font-size: 20px;
+    display: flex;
+    justify-content: end;
+    justify-items: end;
 }
 
 #total-presupuesto{
     margin-left: 4%;
     font-weight: 900;
+    font-size: 35px;
+    
 }
 
 
@@ -83,36 +88,45 @@ h3{
     transition: 0.1s ease;
 }
 
+.botones{
+    gap: 5px;
+}
 
+//browser lupa
+.browser-icon {
+    color: #191919;
+    width: 20px;
+    cursor: pointer;
+}
+
+
+//browser input
 .browser-oculto{
     display: none;
     position: relative;
     width: 271px;
+    transition: display 1s cubic-bezier(1, 0.05, 1, 1);
 }
-
-.browser-icon {
-    color: #191919;
-    width: 20px;
-    height: 20px;
-    position: absolute;
-    top: 50%;
-    
-}
-
 .input-icon {
     color: #191919;
     position: absolute;
     width: 20px;
     height: 20px;
-    left: 12px;
+    right: 12px;
     top: 50%;
     transform: translateY(-50%);
+}
+.visible{
+    display: block;
+}
+.ocultar{
+    display: none;
 }
 
 #buscador{ 
     box-sizing: border-box;
     color: #191919;
-    padding: 5px 15px 5px 35px;
+    padding: 5px 15px 5px 15px;
     width: 100%; 
 }
 

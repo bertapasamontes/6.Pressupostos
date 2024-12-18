@@ -26,12 +26,12 @@
     </div>
 </div>
 <div class="row">
-    <div class="num-pages d-inline-flex align-items-center justify-content-end">
+    <div class="num-pages d-inline-flex align-items-center justify-content-end gap-2">
         <!-- pop-up -->
         <button type="button" class="btn btn-information" data-bs-toggle="modal" data-bs-target="#modal-pages">i</button>
 
         <p>Nombre de pàgines: </p>
-        <form [formGroup]="formWeb" class="d-inline-flex align-items-center justify-content-end">
+        <form [formGroup]="formWeb" class="d-inline-flex align-items-center justify-content-end gap-2 form-numberOf">
             <button type="button" class="btn" (click)="removePage()" [disabled]="isUnchanged">-</button>
             <input type="number" formControlName="numberOfPages" [value]="numPages" class="number-field" placeholder="1" id="numPagesInput">
             <!-- <div class="number-field">{{numPages}}</div> -->
@@ -41,12 +41,12 @@
     </div>
 </div>
 <div class="row">
-    <div class="num-languajes d-flex justify-content-end align-items-center">
+    <div class="num-languajes d-flex justify-content-end align-items-center gap-2">
         <!-- pop-up -->
         <button type="button" class="btn btn-information" data-bs-toggle="modal" data-bs-target="#modal-languajes">i</button>
 
         <p>Nombre de llenguatges: </p>
-        <form [formGroup]="formWeb" class="d-inline-flex align-items-center justify-content-end">
+        <form [formGroup]="formWeb" class="d-inline-flex align-items-center justify-content-end gap-2 form-numberOf">
           <button type="button" class="btn" (click)="removeLanguaje()" [disabled]="isUnchanged">-</button>
           <input type="number" formControlName="numberOfLanguajes" [value]="numLanguajes" class="number-field" placeholder="0" id="numLanguajesInput">
           <!-- <div class="number-field">{{numLanguajes}}</div> -->

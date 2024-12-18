@@ -151,7 +151,7 @@ export class BudgetsListComponent{
       {
       username: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required]),
-      phoneNumber:new FormControl(0, [Validators.required])
+      phoneNumber:new FormControl(0, [Validators.required,Validators.pattern('^[- +()0-9]+$')])
       }
     );    
   };
@@ -296,8 +296,7 @@ export class BudgetsListComponent{
     // Actualizar la URL con los nuevos parámetros
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: params,
-      // queryParamsHandling: 'merge' // Mantener otros parámetros existentes
+      queryParams: params
     });
   }
 
@@ -405,6 +404,11 @@ export class BudgetsListComponent{
     
     this.renderer.appendChild(col3, col3Text);
 
+    const col3DivTotal = this.renderer.createElement('div');
+    this.renderer.addClass(col3DivTotal, "d-flex");
+    this.renderer.addClass(col3DivTotal, "d-inline");
+    this.renderer.addClass(col3DivTotal, "align-items-end");
+
     const col3Total = this.renderer.createElement('p');
     this.renderer.addClass(col3Total, 'total-presupuesto');
     const col3SpanEuros = this.renderer.createElement('SPAN');
@@ -413,8 +417,9 @@ export class BudgetsListComponent{
     col3SpanEuros.appendChild(col3Euros);
     col3Total.innerText = this.totalPresuValor;
     
-    this.renderer.appendChild(col3, col3Total);
-    this.renderer.appendChild(col3, col3SpanEuros);
+    this.renderer.appendChild(col3DivTotal, col3Total);
+    this.renderer.appendChild(col3DivTotal, col3SpanEuros);
+    this.renderer.appendChild(col3, col3DivTotal);
     //----  fin contenido dentro de las columnas -----------
 
 
@@ -512,5 +517,19 @@ export class BudgetsListComponent{
     });
 
     rows.forEach(row => this.resultPresu.nativeElement.appendChild(row));
+  }
+
+
+
+  lupa = document.getElementById("browser-icon") as HTMLElement;
+  browser = document.getElementById("browser-oculto") as HTMLElement;
+  LupaOculta = false;
+  browserVisible = false; 
+  displayBrowser(){
+    // this.renderer.addClass(this.lupa, "ocultar");
+
+    // this.lupa.classList.add("ocultar");
+    this.browserVisible = true;
+    this.LupaOculta=true;
   }
 }
