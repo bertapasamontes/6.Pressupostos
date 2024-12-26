@@ -259,7 +259,9 @@ export class BudgetsListComponent{
 
         const currentPages = this.budgetService.getNumPages();
         console.log("current pages: ", currentPages)
+
         const currentLanguajes = this.budgetService.getNumLanguajes();
+        
 
         //añadimos el serivicio seeccionado al array serviciosAñadidos
         this.serviciosAñadidos.push({
@@ -318,7 +320,12 @@ export class BudgetsListComponent{
       //visibility pannel
       if(checkbox.id === "Web"){
         this.coste = 0;
-
+        if(params[pagesNum]){
+          delete params[pagesNum];
+          console.log("parametros pages eliminados");
+        }
+        
+        if(params[lenguajesNum]){delete params[lenguajesNum];}
         this.renderer.removeClass(this.pannel.nativeElement,"visible");
         this.renderer.addClass(this.pannel.nativeElement,"hidden");
       }
