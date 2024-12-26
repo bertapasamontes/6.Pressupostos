@@ -101,7 +101,10 @@ export class BudgetsListComponent{
           checkbox.checked = true;
           
           if (!this.serviciosAñadidos.find((s: { id: string; }) => s.id === servicio.nombre)) {
-            this.serviciosAñadidos.push({ id: servicio.nombre, value: Number(servicio.valor) });
+            this.serviciosAñadidos.push(
+              { id: servicio.nombre, 
+                value: Number(servicio.valor) 
+              });
             // this.totalPresuValor +=servicio.valor;
             this.totalPresu.sumameEstoAlPresu(servicio.valor);
           }
@@ -235,8 +238,6 @@ export class BudgetsListComponent{
     // -----------------------
 
     if(checkbox.checked){
-      this.recalcularTotal();
-
       console.log("suma presupuesto chequeado: ", this.sumaPresu);
       this.totalPresu.sumameEstoAlPresu(value);
 
@@ -273,12 +274,7 @@ export class BudgetsListComponent{
         console.log("servicio añadido: ", this.serviciosAñadidos);
 
 
-        console.log("web chequeada")
-
-        // Navega a la nueva URL con parámetros
-        // const pages = this.numPagesValor | 1;
-        // const languajes = this.numLanguajesValor | 0;
-        // this.router.navigate(['/budget-list', pages, languajes]);
+        console.log("web chequeada");
 
         // ------ rutas ------
         params[lenguajesNum] = this.numLanguajesValor; //añade el parametro si está seleccionado
@@ -293,7 +289,7 @@ export class BudgetsListComponent{
         });
         console.log("servicio añadido: ", this.serviciosAñadidos);
       }
-
+      this.recalcularTotal();
     } else{
       console.log("suma presupuesto: sin chequear", this.sumaPresu);
       this.totalPresu.restameEstoDelPresu(value);
@@ -344,8 +340,10 @@ export class BudgetsListComponent{
 
   recalcularTotal(){
     // this.sumaPresu = 0;
-    this.serviciosAñadidos.forEach((servicio: { valor: number; })=>{
-      this.totalPresuValor += servicio.valor; 
+    console.log("recalcular totla: ", this.totalPresuValor)
+    this.serviciosAñadidos.forEach((servicio: { value: number; })=>{
+      this.totalPresuValor += Number(servicio.value); 
+      console.log("valor: ", servicio.value)
     })
     return this.totalPresuValor;
   }
