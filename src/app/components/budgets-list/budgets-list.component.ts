@@ -9,6 +9,7 @@ import { Pressu } from '../../pressu';
 
 import { Router, RouterModule } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
+import { CustomValidators } from './custom-validators';
 
 @Component({
   selector: 'app-budgets-list',
@@ -89,6 +90,9 @@ export class BudgetsListComponent{
     // ------------ rutas ------------
     //nos suscribimos a las rutas para, si en la url hay parametros, q se marquen
     this.route.queryParams.subscribe(params => {
+      console.log("parametros al cargar: ", params);
+      
+
       // Marcar los checkboxes según los parámetros de la URL
       this.servicios.forEach(servicio => {
         const checkbox = document.getElementById(servicio.nombre) as HTMLInputElement;
@@ -97,20 +101,34 @@ export class BudgetsListComponent{
           checkbox.checked = true;
           
           if (!this.serviciosAñadidos.find((s: { id: string; }) => s.id === servicio.nombre)) {
-            this.serviciosAñadidos.push({ id: servicio.nombre, value: servicio.valor });
+            this.serviciosAñadidos.push({ id: servicio.nombre, value: Number(servicio.valor) });
             // this.totalPresuValor +=servicio.valor;
-            this.totalPresu.sumameEstoAlPresu(servicio.valor)
+            this.totalPresu.sumameEstoAlPresu(servicio.valor);
           }
-          // else{
-          //   this.totalPresu.restameEstoDelPresu(servicio.valor)
-          // }
+          else{
+            console.log("estoy aqui");
+            this.totalPresuValor -=servicio.valor;
+            // this.totalPresu.restameEstoDelPresu(servicio.valor)
+          }
+
+          if(checkbox.id == "Web"){
+            this.renderer.removeClass(this.pannel.nativeElement,"hidden");
+            this.renderer.addClass(this.pannel.nativeElement,"visible");
+          }
           console.table("servicios desde url", this.serviciosAñadidos);
         }
       });
+
+      this.numPagesValor = +params['pages'] || 1;
+      this.numLanguajesValor = +params['lenguajes'] || 0;
+
+      this.budgetService.setNumLanguajes(this.numLanguajesValor);
+      this.budgetService.setNumPages(this.numPagesValor);
+
+      console.log("number of pages", this.numPagesValor, "       number of languajes: ", this.numLanguajesValor);
       console.log("estoy fuera");
     });
     //---------------------------------
-
 
 
 
@@ -151,12 +169,13 @@ export class BudgetsListComponent{
       {
       username: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required]),
-      phoneNumber:new FormControl(0, [Validators.required,Validators.pattern('^[- +()0-9]+$')])
+      phoneNumber:new FormControl(0, [Validators.required, Validators.minLength(9), CustomValidators.onlyNumbers])
       }
     );    
   };
 
   ngAfterViewInit() { //las vistas de los hijos del componente ya están accesibles. el elemento referenciado está completamente inicializado y accesible
+
     if (this.pannel) {
       console.log('numPages del panel:', this.pannel.numPages);
       console.log('numPages del panel:', this.pannel.numLanguajes);
@@ -185,17 +204,17 @@ export class BudgetsListComponent{
   onPagesChanged(newNumPages: number): void {
     console.log('Número de páginas actualizado en el padre:', newNumPages);
     this.numPagesValor = newNumPages;
-    // Puedes almacenar este valor si necesitas usarlo en otro lugar
+    this.budgetService.setNumPages(this.numPagesValor);
   }
   
   onLanguajesChanged(newNumLanguajes: number): void {
     console.log('Número de idiomas actualizado en el padre:', newNumLanguajes);
     this.numLanguajesValor = newNumLanguajes; 
-    // Almacenar este valor si es necesario
+    this.budgetService.setNumLanguajes(this.numLanguajesValor);
   }
 
   private updatePanelInputs() {
-    // Utiliza el Renderer2 para actualizar los valores de los inputs del panel directamente
+    // actualizar los valores de los inputs del panel directamente
     this.renderer.setProperty(document.querySelector('#numPagesInput'), 'value', this.budgetService.getNumPages().toString());
     this.renderer.setProperty(document.querySelector('#numLanguajesInput'), 'value', this.budgetService.getNumLanguajes().toString());
   }
@@ -211,10 +230,11 @@ export class BudgetsListComponent{
     // obtener los parámetros actuales
     const params: { [key: string]: any } = { ...this.route.snapshot.queryParams };
     const nombreServicio = checkbox.id;
+    const lenguajesNum = "lenguajes";
+    const pagesNum = "pages";
     // -----------------------
 
     if(checkbox.checked){
-      // this.sumaPresu += value;
       this.recalcularTotal();
 
       console.log("suma presupuesto chequeado: ", this.sumaPresu);
@@ -249,6 +269,19 @@ export class BudgetsListComponent{
           numberOfLanguajes: currentLanguajes
         });
         console.log("servicio añadido: ", this.serviciosAñadidos);
+
+
+        console.log("web chequeada")
+
+        // Navega a la nueva URL con parámetros
+        // const pages = this.numPagesValor | 1;
+        // const languajes = this.numLanguajesValor | 0;
+        // this.router.navigate(['/budget-list', pages, languajes]);
+
+        // ------ rutas ------
+        params[lenguajesNum] = this.numLanguajesValor; //añade el parametro si está seleccionado
+        params[pagesNum] = this.numLanguajesValor; //añade el parametro si está seleccionado
+        // -------------------
       }
       else{
         //añadimos el serivicio seeccionado al array serviciosAñadidos
@@ -260,24 +293,26 @@ export class BudgetsListComponent{
       }
 
     } else{
-      // this.sumaPresu -=value;
-      this.recalcularTotal()
-
-
-      console.log("suma presupuesto: ", this.sumaPresu);
+      console.log("suma presupuesto: sin chequear", this.sumaPresu);
       this.totalPresu.restameEstoDelPresu(value);
-
-
-      // ------- rutas --------
-      if(params[nombreServicio]){delete params[nombreServicio];}
-      // ----------------------
-      
 
       //quitamos el elemento del array serviciosAñadidos
       let indexCheckId = this.serviciosAñadidos.indexOf(checkbox.id);
       this.serviciosAñadidos.splice(indexCheckId, 1);
       
       console.log("servicio eliminado: ", this.serviciosAñadidos);
+
+
+      // ------- rutas --------
+      if(params[nombreServicio]){
+        delete params[nombreServicio];
+        console.log("parametros eliminados");
+        console.log("parametros de la url:", params)
+      }
+      // ----------------------
+      
+      // this.sumaPresu -=value;
+      this.recalcularTotal();
 
 
       //visibility pannel
@@ -443,6 +478,27 @@ export class BudgetsListComponent{
     console.log("presupuestos", this.presupuestos);
 
     this.showInfo();
+
+    //------------ rutas ----------------
+    // obtener los parámetros actuales
+    const params: { [key: string]: any } = { ...this.route.snapshot.queryParams };
+    
+    //eliminamos los parametros de la url porque no hay nada seleccionado
+    this.serviciosAñadidos.forEach((servicio: any) => {
+      const nombreServicio = servicio.id;
+      if(params[nombreServicio]){
+        delete params[nombreServicio];
+        console.log("parametros eliminados");
+        console.log("parametros de la url borrada:", params);
+         // Actualizar la URL con los nuevos parámetros
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: params
+        });
+      }
+    });
+    // -------------------------------------
+
     this.cleanForm();
   }
 
@@ -498,7 +554,7 @@ export class BudgetsListComponent{
     rows.sort((a: any, b: any) => {
       const priceA = a.getAttribute('data-price') || '';
       const priceB = b.getAttribute('data-price') || '';
-      return priceA.localeCompare(priceB); // orden por precio (alfabeticamente?)
+      return priceA - priceB; // orden por precio (alfabeticamente?)
     });
 
     rows.forEach(row => this.resultPresu.nativeElement.appendChild(row));

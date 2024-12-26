@@ -4,6 +4,6 @@ import { PanelComponent } from './components/panel/panel.component';
 import { AppComponent } from './app.component';
 
 export const routes: Routes = [
-    {path: 'budgete-list', component: BudgetsListComponent, title:"budget-list"},
+    {path: 'budgete-list/:pages/:languages', component: BudgetsListComponent, title:"budget-list"},
     {path: 'panel', component: PanelComponent, title: "pannel"},
 ];
