@@ -31,9 +31,8 @@ Este proyecto es una aplicación Angular creada para gestionar presupuestos. Uti
 ## ▶️ Ejecución
 - Ejecuta la aplicación localmente:
    ```bash
-   ng serve
+   ng serve -o
    ```
-- Abre el navegador y navega a `http://localhost:4200/`.
 
 ## 🌐 Despliegue
 Este proyecto puede desplegarse en servicios como Vercel u otros servidores de hosting web.
